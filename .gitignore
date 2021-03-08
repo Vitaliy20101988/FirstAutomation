@@ -1,0 +1,27 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+### Spring Boot DevTools ###
+out/
+
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+.ideaDataSources
+dataSources
+
+
+### Help scripts ###
+*.cmd
+*.sh
+
+### Mac OS index ###
+**.DS_Store
+
+### RR my tools
+tools/**
+
+tmp
+log
