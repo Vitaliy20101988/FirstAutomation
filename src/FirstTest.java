@@ -1,9 +1,14 @@
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
 
@@ -33,6 +38,46 @@ public class FirstTest {
 
     @Test
     public void firstTest() {
-        System.out.println("First test run.");
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'SKIP')]"),
+                "'SKIP' button is not displayed.");
+
+        WebElement search_input = waitForElementPresentBy(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
+                "search input is not displayed"
+        );
+
+        assertElementHasText(search_input, "Search Wikipedia",
+                "Search Wikipedia is not displayed.");
+    }
+
+    private WebElement waitForElementPresentBy(By byElement, String error_message, long timeOutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
+        wait.withMessage(error_message);
+        return wait.until(
+                ExpectedConditions.presenceOfElementLocated(byElement)
+        );
+    }
+
+    private WebElement waitForElementPresentBy(By byElement, String error_message) {
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        wait.withMessage(error_message);
+        return wait.until(
+                ExpectedConditions.presenceOfElementLocated(byElement)
+        );
+    }
+
+    private WebElement waitForElementAndClick(By elementBy, String error_message) {
+        WebElement element = waitForElementPresentBy(elementBy, error_message);
+        element.click();
+        return element;
+    }
+
+    private void assertElementHasText(WebElement element, String expectedText, String error_message) {
+        Assert.assertEquals(
+                error_message,
+                expectedText,
+                element.getAttribute("text")
+        );
     }
 }
