@@ -71,7 +71,7 @@ public class FirstTest {
                 "search input is not displayed"
         );
 
-        assertElementsPresent(getSearchingLinks(),
+        assertElementsPresent(getSearchLinksList(),
                 "element is not present");
 
         waitForElementAndClick(
@@ -83,12 +83,55 @@ public class FirstTest {
                 By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title' and @instance='3']"),
                 ""
         );
-
     }
 
-    private List<By> getSearchingLinks() {
+    @Test
+    public void verifySearchResponse() {
+        String textValue = "Java";
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'SKIP')]"),
+                "'SKIP' button is not displayed.");
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
+                "search input is not displayed"
+        );
+
+        waitForElementAndEnterData(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
+                textValue,
+                "search input is not displayed"
+        );
+        assertElementsContainsText(convertByToWebElement(getSearchLinksList()),
+                textValue,
+                "Element does not contain text"
+                );
+    }
+
+    private List<WebElement> convertByToWebElement(List<By> elements) {
+        List<WebElement> webElements = new ArrayList<>();
+        for (By tmp : elements) {
+            webElements.add(waitForElementPresentBy(tmp,
+                    "element " + tmp + " is not displayed"));
+        } return webElements;
+    }
+
+    private List<By> getSearchLinksList() {
+        List<By> presentElementsList = new ArrayList<>();
+        for (By tmp : getSearchingLinksXpathes()) {
+            try {
+                waitForElementPresentBy(tmp,
+                        "");
+                presentElementsList.add(tmp);
+            } catch (TimeoutException e) {
+                return presentElementsList;
+            }
+        } return presentElementsList;
+    }
+
+    private List<By> getSearchingLinksXpathes() {
         List<By> elementsList = new ArrayList<>();
-        for (int i = 1; i < 5; i+=2) {
+        for (int i = 1; i < 21; i+=2) {
             elementsList.add(By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title' and @instance='" + i + "']"));
         }
         return elementsList;
@@ -135,6 +178,19 @@ public class FirstTest {
                 expectedText,
                 element.getAttribute("text")
         );
+    }
+
+    private void assertElementContainsText(WebElement element, String expectedText, String error_message) {
+        Assert.assertTrue(
+                error_message,
+                element.getAttribute("text").contains(expectedText)
+        );
+    }
+
+    private void assertElementsContainsText(List<WebElement> elements, String expectedText, String error_message) {
+        for (WebElement tmp : elements) {
+            assertElementContainsText(tmp, expectedText, error_message);
+        }
     }
 
     private void assertElementPresent(By elementBy, String error_message) {
