@@ -15,6 +15,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class FirstTest {
 
@@ -249,6 +250,10 @@ public class FirstTest {
                 ""
         );
 
+        waitForElementPresentBy(
+                By.xpath("//*[@text='" + second_article + "']"),
+                "'" + second_article + "' is not present");
+
         assertElementPresent(
                 By.xpath("//*[@text='" + second_article + "']"),
                 "'" + second_article + "' is not present"
@@ -259,10 +264,10 @@ public class FirstTest {
                 "Cannot click to '" + second_article + "'"
         );
 
-//        assertElementPresent(
-//                By.xpath("(//android.view.View[@content-desc='" + second_article + "'])[1]"),
-//                "Name of article is not present"
-//        );
+        assertElementPresent(
+                By.xpath("(//android.view.View[@content-desc='" + second_article + "'])[1]"),
+                "Name of article is not present"
+        );
 
         assertElementHasText(
                 By.xpath("(//android.view.View[@content-desc=\"Appium\"])[1]"),
@@ -280,7 +285,36 @@ public class FirstTest {
         }
     }
 
-    private void swipeLeft(By elementBy, String error_message) {
+    @Test
+    public void assertTitle() {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'SKIP')]"),
+                "'SKIP' button is not displayed.");
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
+                "search input is not displayed"
+        );
+
+        waitForElementAndEnterData(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
+                "Java",
+                "search input is not displayed"
+        );
+
+        String java_link_name = "Java (programming language)";
+        waitForElementAndClick(
+                By.xpath("//*[@text='" + java_link_name + "']"),
+                "'" + java_link_name + "' link is not present"
+        );
+
+        assertElementPresent(
+                By.xpath("//android.view.View[@content-desc='" + java_link_name + "']"),
+                "Name of article is not present"
+        );
+    }
+
+        private void swipeLeft(By elementBy, String error_message) {
         WebElement element = waitForElementPresentBy(
                 elementBy,
                 error_message,
@@ -398,11 +432,10 @@ public class FirstTest {
     }
 
     private void assertElementPresent(By elementBy, String error_message) {
-        waitForElementPresentBy(elementBy, error_message);
         try {
             Assert.assertTrue(error_message,
                     driver.findElement(elementBy).isDisplayed());
-        } catch (TimeoutException e) {
+        } catch (TimeoutException | NoSuchElementException e) {
             Assert.fail(error_message);
         }
     }
