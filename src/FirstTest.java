@@ -1,4 +1,5 @@
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
 import org.junit.Assert;
@@ -108,6 +109,200 @@ public class FirstTest {
                 );
     }
 
+    @Test
+    public void saveTwoArticles() throws InterruptedException {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'SKIP')]"),
+                "'SKIP' button is not displayed.");
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
+                "search input is not displayed"
+        );
+
+        waitForElementAndEnterData(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
+                "Java",
+                "search input is not displayed"
+        );
+
+        String java_link_name = "Java (programming language)";
+        waitForElementAndClick(
+                By.xpath("//*[@text='" + java_link_name + "']"),
+                "'" + java_link_name + "' link is not present"
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='Save']"),
+                "Cannot find element with text 'Save'"
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/snackbar_action"),
+                "Cannot find element 'ADD TO LIST'"
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='Create new']"),
+                "'Create list' btn is not present"
+        );
+
+        String list_name = "java";
+        waitForElementAndEnterData(
+                By.xpath("//*[@resource-id='org.wikipedia:id/custom']//*[@resource-id='org.wikipedia:id/text_input_container' and @instance='2']"),
+                list_name,
+                "Input field 'name of list is not displayed'"
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='OK']"),
+                "'OK' btn is not present"
+        );
+
+        Thread.sleep(2000);
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"),
+                "'Backspace' btn is not present"
+        );
+
+      //  Thread.sleep(5000);
+
+//        waitForElementAndClick(
+//                By.xpath("//*[@text='Search Wikipedia']"),
+//                "'Search Wikipedia input is not present'"
+//        );
+
+        String second_article = "Appium";
+        waitForElementAndEnterData(
+                By.id("org.wikipedia:id/search_src_text"),
+                second_article,
+                "input field 'Search Wikipedia is not present"
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Appium']"),
+                "Appium link is not present"
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='Save']"),
+                "Cannot find element with text 'Save'"
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/snackbar_action"),
+                "Cannot find element 'ADD TO LIST'"
+        );
+
+//        String move_from_saved_to_another_reading_list_btn = "Move from Saved to another reading list";
+//        waitForElementAndClick(
+//                By.xpath("//*[@text='" + move_from_saved_to_another_reading_list_btn + "']"),
+//                "'" + move_from_saved_to_another_reading_list_btn + "' is not present"
+//        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@class='android.view.ViewGroup']//*[@text='" + list_name + "']"),
+                "'" + list_name + "' list is not present"
+        );
+
+//        waitForElementAndClick(
+//                By.id("org.wikipedia:id/page_toolbar_button_show_overflow_menu"),
+//                "show_overflow_menu btn is not present"
+//        );
+
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"),
+                "'Backspace' btn is not present"
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "'Close' btn is not present"
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_toolbar']//*[@class='android.widget.ImageButton']"),
+                "'Backspace' btn is not present"
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='My lists']"),
+                "'My lists' btn is not present"
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/menu_search_lists"),
+                "'menu search list' btn is not present"
+        );
+
+
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='" + list_name + "']"),
+                "'" + list_name + "' is not present"
+        );
+
+        swipeLeft(
+                By.xpath("//*[@text='" + java_link_name + "']"),
+                ""
+        );
+
+        assertElementPresent(
+                By.xpath("//*[@text='" + second_article + "']"),
+                "'" + second_article + "' is not present"
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='" + second_article + "']"),
+                "Cannot click to '" + second_article + "'"
+        );
+
+//        assertElementPresent(
+//                By.xpath("(//android.view.View[@content-desc='" + second_article + "'])[1]"),
+//                "Name of article is not present"
+//        );
+
+        assertElementHasText(
+                By.xpath("(//android.view.View[@content-desc=\"Appium\"])[1]"),
+                "content-desc",
+                second_article,
+                "Text is not contain '" + second_article + "'"
+        );
+
+
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void swipeLeft(By elementBy, String error_message) {
+        WebElement element = waitForElementPresentBy(
+                elementBy,
+                error_message,
+                10);
+        int leftX = element.getLocation().getX();
+        int rightX = leftX + element.getSize().getWidth();
+        int upperY = element.getLocation().getY();
+        int lowerY = upperY + element.getSize().getHeight();
+
+        int middleY = (upperY + lowerY) / 2;
+
+        TouchAction touchAction = new TouchAction(driver);
+        touchAction
+                .press(rightX, middleY)
+                .waitAction(150)
+                .moveTo(leftX, middleY)
+                .release()
+                .perform();
+
+
+    }
+
     private List<WebElement> convertByToWebElement(List<By> elements) {
         List<WebElement> webElements = new ArrayList<>();
         for (By tmp : elements) {
@@ -180,6 +375,15 @@ public class FirstTest {
         );
     }
 
+    private void assertElementHasText(By elementBy, String attributeName, String expectedText, String error_message) {
+        WebElement element = waitForElementPresentBy(elementBy, error_message);
+        Assert.assertEquals(
+                "Texts are not equals",
+                expectedText,
+                element.getAttribute(attributeName)
+        );
+    }
+
     private void assertElementContainsText(WebElement element, String expectedText, String error_message) {
         Assert.assertTrue(
                 error_message,
@@ -217,5 +421,4 @@ public class FirstTest {
             assertElementPresent(tmp, error_message);
         }
     }
-
 }
