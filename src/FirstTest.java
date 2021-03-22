@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -38,6 +39,7 @@ public class FirstTest {
 
     @After
     public void tearDown() {
+        turnScreen(ScreenOrientation.PORTRAIT);
         driver.quit();
     }
 
@@ -312,6 +314,13 @@ public class FirstTest {
                 By.xpath("//android.view.View[@content-desc='" + java_link_name + "']"),
                 "Name of article is not present"
         );
+
+
+    }
+
+
+    private void turnScreen(ScreenOrientation orientation) {
+        driver.rotate(orientation);
     }
 
         private void swipeLeft(By elementBy, String error_message) {
