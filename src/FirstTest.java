@@ -35,11 +35,12 @@ public class FirstTest {
         capabilities.setCapability("app", "/Users/vitaliy/Documents/IdeaProjects/JavaAppiumAutomation/apks/org.wikipedia_50341_apps.evozi.com.apk");
 
         driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+
+        turnScreen(ScreenOrientation.PORTRAIT);
     }
 
     @After
     public void tearDown() {
-        turnScreen(ScreenOrientation.PORTRAIT);
         driver.quit();
     }
 
