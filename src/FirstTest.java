@@ -113,7 +113,7 @@ public class FirstTest {
     }
 
     @Test
-    public void saveTwoArticles() throws InterruptedException {
+    public void saveTwoArticles() {
         waitForElementAndClick(
                 By.xpath("//*[contains(@text, 'SKIP')]"),
                 "'SKIP' button is not displayed.");
@@ -162,19 +162,10 @@ public class FirstTest {
                 "'OK' btn is not present"
         );
 
-        Thread.sleep(2000);
-
         waitForElementAndClick(
                 By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"),
                 "'Backspace' btn is not present"
         );
-
-      //  Thread.sleep(5000);
-
-//        waitForElementAndClick(
-//                By.xpath("//*[@text='Search Wikipedia']"),
-//                "'Search Wikipedia input is not present'"
-//        );
 
         String second_article = "Appium";
         waitForElementAndEnterData(
@@ -198,22 +189,10 @@ public class FirstTest {
                 "Cannot find element 'ADD TO LIST'"
         );
 
-//        String move_from_saved_to_another_reading_list_btn = "Move from Saved to another reading list";
-//        waitForElementAndClick(
-//                By.xpath("//*[@text='" + move_from_saved_to_another_reading_list_btn + "']"),
-//                "'" + move_from_saved_to_another_reading_list_btn + "' is not present"
-//        );
-
         waitForElementAndClick(
                 By.xpath("//*[@class='android.view.ViewGroup']//*[@text='" + list_name + "']"),
                 "'" + list_name + "' list is not present"
         );
-
-//        waitForElementAndClick(
-//                By.id("org.wikipedia:id/page_toolbar_button_show_overflow_menu"),
-//                "show_overflow_menu btn is not present"
-//        );
-
 
         waitForElementAndClick(
                 By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"),
@@ -240,14 +219,10 @@ public class FirstTest {
                 "'menu search list' btn is not present"
         );
 
-
-
         waitForElementAndClick(
                 By.xpath("//*[@text='" + list_name + "']"),
                 "'" + list_name + "' is not present"
         );
-
-        Thread.sleep(2000);
 
         swipeLeft(
                 By.xpath("//*[@text='" + java_link_name + "']"),
@@ -268,25 +243,12 @@ public class FirstTest {
                 "Cannot click to '" + second_article + "'"
         );
 
-//        assertElementPresent(
-//                By.xpath("(//android.view.View[@content-desc='" + second_article + "'])[1]"),
-//                "Name of article is not present"
-//        );
-
         assertElementHasText(
                 By.xpath("//android.view.View[@*=\"Appium\"][1]"),
-                "content-desc",
+                "name",
                 second_article,
                 "Text is not contain '" + second_article + "'"
         );
-
-
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Test
@@ -387,6 +349,14 @@ public class FirstTest {
         );
     }
 
+    private WebElement waitVisability(By byElement, String error_message, long timeOutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
+        wait.withMessage(error_message);
+        return wait.until(
+                ExpectedConditions.visibilityOfElementLocated(byElement)
+        );
+    }
+
     private WebElement waitForElementPresentBy(By byElement, String error_message) {
         return waitForElementPresentBy(byElement, error_message, 5);
     }
@@ -400,13 +370,13 @@ public class FirstTest {
     }
 
     private WebElement waitForElementAndClick(By elementBy, String error_message) {
-        WebElement element = waitForElementPresentBy(elementBy, error_message);
+        WebElement element = waitVisability(elementBy, error_message, 10);
         element.click();
         return element;
     }
 
     private WebElement waitForElementAndEnterData(By elementBy, String value, String error_message) {
-        WebElement element = waitForElementPresentBy(elementBy, error_message);
+        WebElement element = waitVisability(elementBy, error_message, 10);
         element.sendKeys(value);
         return element;
     }
