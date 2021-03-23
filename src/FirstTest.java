@@ -247,6 +247,8 @@ public class FirstTest {
                 "'" + list_name + "' is not present"
         );
 
+        Thread.sleep(2000);
+
         swipeLeft(
                 By.xpath("//*[@text='" + java_link_name + "']"),
                 ""
@@ -266,13 +268,13 @@ public class FirstTest {
                 "Cannot click to '" + second_article + "'"
         );
 
-        assertElementPresent(
-                By.xpath("(//android.view.View[@content-desc='" + second_article + "'])[1]"),
-                "Name of article is not present"
-        );
+//        assertElementPresent(
+//                By.xpath("(//android.view.View[@content-desc='" + second_article + "'])[1]"),
+//                "Name of article is not present"
+//        );
 
         assertElementHasText(
-                By.xpath("(//android.view.View[@content-desc=\"Appium\"])[1]"),
+                By.xpath("//android.view.View[@*=\"Appium\"][1]"),
                 "content-desc",
                 second_article,
                 "Text is not contain '" + second_article + "'"
