@@ -1,250 +1,110 @@
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.TouchAction;
-import io.appium.java_client.android.AndroidDriver;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
+import lib.TestCore;
+import lib.ui.ArticlePageObject;
+import lib.ui.MainPageObject;
+import lib.ui.SearchPageObject;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+public class FirstTest extends TestCore {
 
-public class FirstTest {
+    private MainPageObject mainPageObject;
+    private SearchPageObject searchPageObject;
+    private ArticlePageObject articlePage;
 
-    private AppiumDriver driver;
-
-    @Before
-    public void setUp() throws Exception {
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-
-        capabilities.setCapability("platformName", "Android");
-        capabilities.setCapability("deviceName", "AndroidTestDevice");
-        capabilities.setCapability("platformVersion", "8.1");
-        capabilities.setCapability("automationName", "Appium");
-        capabilities.setCapability("appPackage", "org.wikipedia");
-        capabilities.setCapability("appActivity", ".main.MainActivity");
-        capabilities.setCapability("app", "/Users/vitaliy/Documents/IdeaProjects/JavaAppiumAutomation/apks/org.wikipedia_50341_apps.evozi.com.apk");
-
-        driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
-
-        turnScreen(ScreenOrientation.PORTRAIT);
-    }
-
-    @After
-    public void tearDown() {
-        driver.quit();
-    }
-
-    @Test
-    public void firstTest() {
-        waitForElementAndClick(
+    protected void setUp() throws Exception {
+        super.setUp();
+        mainPageObject = new MainPageObject(driver);
+        mainPageObject.waitForElementAndClick(
                 By.xpath("//*[contains(@text, 'SKIP')]"),
                 "'SKIP' button is not displayed.");
 
-        WebElement search_input = waitForElementPresentBy(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
-                "search input is not displayed"
-        );
+        this.mainPageObject = new MainPageObject(driver);
+        this.searchPageObject = new SearchPageObject(driver);
+        this.articlePage = new ArticlePageObject(driver);
+    }
 
-        assertElementHasText(search_input, "Search Wikipedia",
+    @Test
+    public void testSearch() {
+        WebElement search_input = searchPageObject.initSearchLine();
+        mainPageObject.assertElementHasText(search_input, "Search Wikipedia",
                 "Search Wikipedia is not displayed.");
     }
 
     @Test
-    public void cancelSearch() {
-        waitForElementAndClick(
-                By.xpath("//*[contains(@text, 'SKIP')]"),
-                "'SKIP' button is not displayed.");
-
-        waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
-                "search input is not displayed"
-        );
-
-        waitForElementAndEnterData(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
-                "Java",
-                "search input is not displayed"
-        );
-
-        assertElementsPresent(getSearchLinksList(),
-                "element is not present");
-
-        waitForElementAndClick(
-                By.id("org.wikipedia:id/search_close_btn"),
-                "search input is not displayed"
-        );
-
-        assertElementNotPresent(
-                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title' and @instance='3']"),
-                ""
-        );
+    public void testCancelSearch() {
+        searchPageObject.enterDataToSearchInput("Java");
+        searchPageObject.verifySearchLinksArePresent();
+        searchPageObject.clickCloseBtn();
+        searchPageObject.verifySearchResultDisappeared();
     }
 
     @Test
-    public void verifySearchResponse() {
+    public void testSearchResponse() {
         String textValue = "Java";
-        waitForElementAndClick(
-                By.xpath("//*[contains(@text, 'SKIP')]"),
-                "'SKIP' button is not displayed.");
-
-        waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
-                "search input is not displayed"
-        );
-
-        waitForElementAndEnterData(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
-                textValue,
-                "search input is not displayed"
-        );
-        assertElementsContainsText(convertByToWebElement(getSearchLinksList()),
-                textValue,
-                "Element does not contain text"
-                );
+        searchPageObject.enterDataToSearchInput(textValue);
+        searchPageObject.verifySearchLinksContainsText(textValue);
     }
 
     @Test
-    public void saveTwoArticles() {
-        waitForElementAndClick(
-                By.xpath("//*[contains(@text, 'SKIP')]"),
-                "'SKIP' button is not displayed.");
-
-        waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
-                "search input is not displayed"
-        );
-
-        waitForElementAndEnterData(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
-                "Java",
-                "search input is not displayed"
-        );
-
+    public void testTwoArticles() {
+        String text = "Java";
         String java_link_name = "Java (programming language)";
-        waitForElementAndClick(
-                By.xpath("//*[@text='" + java_link_name + "']"),
-                "'" + java_link_name + "' link is not present"
-        );
-
-        waitForElementAndClick(
-                By.xpath("//*[@text='Save']"),
-                "Cannot find element with text 'Save'"
-        );
-
-        waitForElementAndClick(
-                By.id("org.wikipedia:id/snackbar_action"),
-                "Cannot find element 'ADD TO LIST'"
-        );
-
-        waitForElementAndClick(
-                By.xpath("//*[@text='Create new']"),
-                "'Create list' btn is not present"
-        );
-
         String list_name = "java";
-        waitForElementAndEnterData(
-                By.xpath("//*[@resource-id='org.wikipedia:id/custom']//*[@resource-id='org.wikipedia:id/text_input_container' and @instance='2']"),
-                list_name,
-                "Input field 'name of list is not displayed'"
-        );
+        String second_article = "Appium";
+        searchPageObject.enterDataToSearchInput(text);
+        articlePage.clickToArticleInSearchList(java_link_name);
+        articlePage.clickSaveBtn();
+        articlePage.clickAddToListBtn();
+        articlePage.clickCreateNewBtn();
+        articlePage.enterDataNameOfList(list_name);
+        articlePage.clickOKBtn();
 
-        waitForElementAndClick(
-                By.xpath("//*[@text='OK']"),
-                "'OK' btn is not present"
-        );
-
-        waitForElementAndClick(
+        mainPageObject.waitForElementAndClick(
                 By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"),
                 "'Backspace' btn is not present"
         );
 
-        String second_article = "Appium";
-        waitForElementAndEnterData(
+        mainPageObject.waitForElementAndEnterData(
                 By.id("org.wikipedia:id/search_src_text"),
                 second_article,
                 "input field 'Search Wikipedia is not present"
         );
 
-        waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Appium']"),
-                "Appium link is not present"
-        );
+        articlePage.clickToArticleInSearchList(second_article);
+        articlePage.clickSaveBtn();
+        articlePage.clickAddToListBtn();
 
-        waitForElementAndClick(
-                By.xpath("//*[@text='Save']"),
-                "Cannot find element with text 'Save'"
-        );
-
-        waitForElementAndClick(
-                By.id("org.wikipedia:id/snackbar_action"),
-                "Cannot find element 'ADD TO LIST'"
-        );
-
-        waitForElementAndClick(
+        mainPageObject.waitForElementAndClick(
                 By.xpath("//*[@class='android.view.ViewGroup']//*[@text='" + list_name + "']"),
                 "'" + list_name + "' list is not present"
         );
 
-        waitForElementAndClick(
+        mainPageObject.waitForElementAndClick(
                 By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"),
                 "'Backspace' btn is not present"
         );
 
-        waitForElementAndClick(
-                By.id("org.wikipedia:id/search_close_btn"),
-                "'Close' btn is not present"
-        );
+        searchPageObject.clickCloseBtn();
 
-        waitForElementAndClick(
+        mainPageObject.waitForElementAndClick(
                 By.xpath("//*[@resource-id='org.wikipedia:id/search_toolbar']//*[@class='android.widget.ImageButton']"),
                 "'Backspace' btn is not present"
         );
 
-        waitForElementAndClick(
-                By.xpath("//*[@text='My lists']"),
-                "'My lists' btn is not present"
-        );
+        articlePage.clickMyListsBtn();
 
-        waitForElementAndClick(
+        mainPageObject.waitForElementAndClick(
                 By.id("org.wikipedia:id/menu_search_lists"),
                 "'menu search list' btn is not present"
         );
 
-        waitForElementAndClick(
-                By.xpath("//*[@text='" + list_name + "']"),
-                "'" + list_name + "' is not present"
-        );
+        articlePage.clickToList(list_name);
+        articlePage.deleteArticle(java_link_name);
+        articlePage.verifyArticleIsDisplayed(second_article);
+        articlePage.clickToArticleByName(second_article);
 
-        swipeLeft(
-                By.xpath("//*[@text='" + java_link_name + "']"),
-                ""
-        );
-
-        waitForElementPresentBy(
-                By.xpath("//*[@text='" + second_article + "']"),
-                "'" + second_article + "' is not present");
-
-        assertElementPresent(
-                By.xpath("//*[@text='" + second_article + "']"),
-                "'" + second_article + "' is not present"
-        );
-
-        waitForElementAndClick(
-                By.xpath("//*[@text='" + second_article + "']"),
-                "Cannot click to '" + second_article + "'"
-        );
-
-        assertElementHasText(
+        mainPageObject.assertElementHasText(
                 By.xpath("//android.view.View[@*=\"Appium\"][1]"),
                 "name",
                 second_article,
@@ -253,187 +113,28 @@ public class FirstTest {
     }
 
     @Test
-    public void assertTitle() {
-        waitForElementAndClick(
-                By.xpath("//*[contains(@text, 'SKIP')]"),
-                "'SKIP' button is not displayed.");
+    public void testAssertTitle() {
 
-        waitForElementAndClick(
+        mainPageObject.waitForElementAndClick(
                 By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
                 "search input is not displayed"
         );
 
-        waitForElementAndEnterData(
+        mainPageObject.waitForElementAndEnterData(
                 By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]"),
                 "Java",
                 "search input is not displayed"
         );
 
         String java_link_name = "Java (programming language)";
-        waitForElementAndClick(
+        mainPageObject.waitForElementAndClick(
                 By.xpath("//*[@text='" + java_link_name + "']"),
                 "'" + java_link_name + "' link is not present"
         );
 
-        assertElementPresent(
+        mainPageObject.assertElementPresent(
                 By.xpath("//android.view.View[@content-desc='" + java_link_name + "']"),
                 "Name of article is not present"
         );
-
-
-    }
-
-
-    private void turnScreen(ScreenOrientation orientation) {
-        driver.rotate(orientation);
-    }
-
-        private void swipeLeft(By elementBy, String error_message) {
-        WebElement element = waitForElementPresentBy(
-                elementBy,
-                error_message,
-                10);
-        int leftX = element.getLocation().getX();
-        int rightX = leftX + element.getSize().getWidth();
-        int upperY = element.getLocation().getY();
-        int lowerY = upperY + element.getSize().getHeight();
-
-        int middleY = (upperY + lowerY) / 2;
-
-        TouchAction touchAction = new TouchAction(driver);
-        touchAction
-                .press(rightX, middleY)
-                .waitAction(150)
-                .moveTo(leftX, middleY)
-                .release()
-                .perform();
-
-
-    }
-
-    private List<WebElement> convertByToWebElement(List<By> elements) {
-        List<WebElement> webElements = new ArrayList<>();
-        for (By tmp : elements) {
-            webElements.add(waitForElementPresentBy(tmp,
-                    "element " + tmp + " is not displayed"));
-        } return webElements;
-    }
-
-    private List<By> getSearchLinksList() {
-        List<By> presentElementsList = new ArrayList<>();
-        for (By tmp : getSearchingLinksXpathes()) {
-            try {
-                waitForElementPresentBy(tmp,
-                        "");
-                presentElementsList.add(tmp);
-            } catch (TimeoutException e) {
-                return presentElementsList;
-            }
-        } return presentElementsList;
-    }
-
-    private List<By> getSearchingLinksXpathes() {
-        List<By> elementsList = new ArrayList<>();
-        for (int i = 1; i < 21; i+=2) {
-            elementsList.add(By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title' and @instance='" + i + "']"));
-        }
-        return elementsList;
-    }
-
-    // WAITS //
-
-    private WebElement waitForElementPresentBy(By byElement, String error_message, long timeOutInSeconds) {
-        WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
-        wait.withMessage(error_message);
-        return wait.until(
-                ExpectedConditions.presenceOfElementLocated(byElement)
-        );
-    }
-
-    private WebElement waitVisability(By byElement, String error_message, long timeOutInSeconds) {
-        WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
-        wait.withMessage(error_message);
-        return wait.until(
-                ExpectedConditions.visibilityOfElementLocated(byElement)
-        );
-    }
-
-    private WebElement waitForElementPresentBy(By byElement, String error_message) {
-        return waitForElementPresentBy(byElement, error_message, 5);
-    }
-
-    private boolean waitForElementIsNotPresent(By byElement, String error_message) {
-        WebDriverWait wait = new WebDriverWait(driver, 5);
-        wait.withMessage(error_message);
-        return wait.until(
-                ExpectedConditions.invisibilityOfElementLocated(byElement)
-        ) ;
-    }
-
-    private WebElement waitForElementAndClick(By elementBy, String error_message) {
-        WebElement element = waitVisability(elementBy, error_message, 10);
-        element.click();
-        return element;
-    }
-
-    private WebElement waitForElementAndEnterData(By elementBy, String value, String error_message) {
-        WebElement element = waitVisability(elementBy, error_message, 10);
-        element.sendKeys(value);
-        return element;
-    }
-
-    // ASSERTS //
-    private void assertElementHasText(WebElement element, String expectedText, String error_message) {
-        Assert.assertEquals(
-                error_message,
-                expectedText,
-                element.getAttribute("text")
-        );
-    }
-
-    private void assertElementHasText(By elementBy, String attributeName, String expectedText, String error_message) {
-        WebElement element = waitForElementPresentBy(elementBy, error_message);
-        Assert.assertEquals(
-                "Texts are not equals",
-                expectedText,
-                element.getAttribute(attributeName)
-        );
-    }
-
-    private void assertElementContainsText(WebElement element, String expectedText, String error_message) {
-        Assert.assertTrue(
-                error_message,
-                element.getAttribute("text").contains(expectedText)
-        );
-    }
-
-    private void assertElementsContainsText(List<WebElement> elements, String expectedText, String error_message) {
-        for (WebElement tmp : elements) {
-            assertElementContainsText(tmp, expectedText, error_message);
-        }
-    }
-
-    private void assertElementPresent(By elementBy, String error_message) {
-        try {
-            Assert.assertTrue(error_message,
-                    driver.findElement(elementBy).isDisplayed());
-        } catch (TimeoutException | NoSuchElementException e) {
-            Assert.fail(error_message);
-        }
-    }
-
-    private void assertElementNotPresent(By elementBy, String error_message) {
-        try {
-            Assert.assertTrue(error_message,
-                    waitForElementIsNotPresent(elementBy, error_message));
-        } catch (TimeoutException e) {
-            Assert.fail(error_message);
-        }
-    }
-
-    private void assertElementsPresent(List<By> elements, String error_message) {
-        for (By tmp : elements) {
-            assertElementPresent(tmp, error_message);
-        }
     }
 }
