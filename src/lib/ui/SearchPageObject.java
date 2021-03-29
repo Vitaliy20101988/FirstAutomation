@@ -8,7 +8,10 @@ public class SearchPageObject extends MainPageObject {
 
     private static final String
         SEARCH_INIT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]",
+        SEARCH_INPUT = "org.wikipedia:id/search_src_text",
         CLOSE_BTN = "org.wikipedia:id/search_close_btn",
+        NAVIGATE_UP_BTN = "//android.widget.ImageButton[@content-desc=\"Navigate up\"]",
+        BACKSPACE_BTN = "//*[@resource-id='org.wikipedia:id/search_toolbar']//*[@class='android.widget.ImageButton']",
         FIRST_SEARCHING_LINK = "//*[@resource-id='org.wikipedia:id/page_list_item_title' and @instance='3']";
 
     public SearchPageObject(AppiumDriver driver) {
@@ -19,18 +22,36 @@ public class SearchPageObject extends MainPageObject {
         return waitForElementPresentBy(By.xpath(SEARCH_INIT_ELEMENT), "Search input is not displayed");
     }
 
-    public void enterDataToSearchInput(String text) {
+    public void enterDataToSearchInit(String text) {
         String err_msg = "Search input is not displayed";
         waitForElementAndClick(By.xpath(SEARCH_INIT_ELEMENT), err_msg);
         waitForElementAndEnterData(By.xpath(SEARCH_INIT_ELEMENT), text, err_msg);
+    }
+
+    public void enterDataToSearchInput(String text) {
+        String err_msg = "Search input is not displayed";
+        waitForElementAndClick(By.id(SEARCH_INPUT), err_msg);
+        waitForElementAndEnterData(By.id(SEARCH_INPUT), text, err_msg);
     }
 
     public void verifySearchLinksArePresent() {
         assertElementsPresent(getSearchLinksList(), "Element is not present");
     }
 
+    public void verifySearchInputHasText(WebElement search_input, String expectedText) {
+        assertElementHasText(search_input, "Search Wikipedia",
+                "Search Wikipedia is not displayed.");
+    }
+
     public void clickCloseBtn() {
         waitForElementAndClick(By.id(CLOSE_BTN), "Cannot click 'CLOSE' button.");
+    }
+
+    public void clickBackspaceBtn() {
+        waitForElementAndClick(By.xpath(BACKSPACE_BTN), "Cannot click 'Backspace' button."); }
+
+    public void clickNavigateUpBtn() {
+        waitForElementAndClick(By.xpath(NAVIGATE_UP_BTN), "Cannot click 'NavigateUP' button.");
     }
 
     public void verifySearchResultDisappeared() {

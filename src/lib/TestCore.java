@@ -27,7 +27,6 @@ public class TestCore extends TestCase {
         capabilities.setCapability("app", "/Users/vitaliy/Documents/IdeaProjects/JavaAppiumAutomation/apks/org.wikipedia_50341_apps.evozi.com.apk");
 
         driver = new AndroidDriver(new URL(appiumURL), capabilities);
-
         driver.rotate(ScreenOrientation.PORTRAIT);
     }
 

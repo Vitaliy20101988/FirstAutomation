@@ -14,6 +14,7 @@ public class ArticlePageObject extends MainPageObject {
         OK_BTN = "//*[@text='OK']",
         ARTICLE_NAME_TMP = "//*[@text='ARTICLE_NAME']",
         MY_LISTS_BTN = "//*[@text='My lists']",
+        ARTICLE_TITLE_TMP = "//android.view.View[@*=\"ARTICLE_NAME\"][1]",
         LIST_NAME_BTN_TMP = "//*[@text='LIST_NAME']";
 
     public ArticlePageObject(AppiumDriver driver) {
@@ -31,6 +32,10 @@ public class ArticlePageObject extends MainPageObject {
 
     public String getListName(String articleName) {
         return LIST_NAME_BTN_TMP.replace("LIST_NAME", articleName);
+    }
+
+    public String getArticleTitleTmp(String articleName) {
+        return ARTICLE_TITLE_TMP.replace("ARTICLE_NAME", articleName);
     }
     // TEMPLATE METHODS //
 
@@ -77,5 +82,14 @@ public class ArticlePageObject extends MainPageObject {
 
     public void deleteArticle(String articleName) {
         swipeLeft(By.xpath(getArticleName(articleName)), "Cannot delete article '" + articleName + "'");
+    }
+
+    public void verifyArticleTitleHasText(String articleName, String expectedArticleTitle) {
+        assertElementHasText(By.xpath(getArticleTitleTmp(articleName)), "name", expectedArticleTitle,
+                "Text is not contain '" + expectedArticleTitle + "'");
+    }
+
+    public void verifyArticleTitleIsPresent(String articleName) {
+        assertElementPresent(By.xpath(getArticleTitleTmp(articleName)), "Name of article is not present");
     }
 }
