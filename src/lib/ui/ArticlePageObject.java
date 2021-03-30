@@ -6,7 +6,6 @@ import org.openqa.selenium.By;
 public class ArticlePageObject extends MainPageObject {
 
     private static final String
-        ARTICLE_NAME_IN_SEARCH_RESULT_TMP = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='ARTICLE_NAME']",
         SAVE_BUTTON = "//*[@text='Save']",
         ADD_TO_LIST_BTN = "org.wikipedia:id/snackbar_action",
         CREATE_NEW_BTN = "//*[@text='Create new']",
@@ -22,9 +21,6 @@ public class ArticlePageObject extends MainPageObject {
     }
 
     // TEMPLATE METHODS //
-    public String getArticleNameInSearchResult(String articleName) {
-        return ARTICLE_NAME_IN_SEARCH_RESULT_TMP.replace("ARTICLE_NAME", articleName);
-    }
 
     public String getArticleName(String articleName) {
         return ARTICLE_NAME_TMP.replace("ARTICLE_NAME", articleName);
@@ -38,10 +34,6 @@ public class ArticlePageObject extends MainPageObject {
         return ARTICLE_TITLE_TMP.replace("ARTICLE_NAME", articleName);
     }
     // TEMPLATE METHODS //
-
-    public void clickToArticleInSearchList(String articleName) {
-        waitForElementAndClick(By.xpath(getArticleNameInSearchResult(articleName)), "'" + articleName + "' link is not present");
-    }
 
     public void clickToArticleByName(String articleName) {
         waitForElementAndClick(By.xpath(getArticleName(articleName)), "'" + articleName + "' link is not present");

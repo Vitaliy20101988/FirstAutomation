@@ -27,7 +27,7 @@ public class ArticleTests extends TestCore {
         String list_name = "java";
         String second_article = "Appium";
         searchPage.enterDataToSearchInit(text);
-        articlePage.clickToArticleInSearchList(java_link_name);
+        searchPage.clickToArticleInSearchList(java_link_name);
         articlePage.clickSaveBtn();
         articlePage.clickAddToListBtn();
         articlePage.clickCreateNewBtn();
@@ -35,7 +35,7 @@ public class ArticleTests extends TestCore {
         articlePage.clickOKBtn();
         searchPage.clickNavigateUpBtn();
         searchPage.enterDataToSearchInput(second_article);
-        articlePage.clickToArticleInSearchList(second_article);
+        searchPage.clickToArticleInSearchList(second_article);
         articlePage.clickSaveBtn();
         articlePage.clickAddToListBtn();
         articlePage.clickToList(list_name);
@@ -54,7 +54,7 @@ public class ArticleTests extends TestCore {
     public void testAssertTitle() {
         String java_link_name = "Java (programming language)";
         searchPage.enterDataToSearchInit("Java");
-        articlePage.clickToArticleInSearchList(java_link_name);
+        searchPage.clickToArticleInSearchList(java_link_name);
         articlePage.verifyArticleTitleIsPresent(java_link_name);
     }
 }

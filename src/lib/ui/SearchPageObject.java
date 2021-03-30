@@ -7,7 +7,9 @@ import org.openqa.selenium.WebElement;
 public class SearchPageObject extends MainPageObject {
 
     private static final String
-        SEARCH_INIT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]",
+            ARTICLE_NAME_IN_SEARCH_RESULT_TMP = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='ARTICLE_NAME']",
+
+    SEARCH_INIT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]",
         SEARCH_INPUT = "org.wikipedia:id/search_src_text",
         CLOSE_BTN = "org.wikipedia:id/search_close_btn",
         NAVIGATE_UP_BTN = "//android.widget.ImageButton[@content-desc=\"Navigate up\"]",
@@ -18,8 +20,22 @@ public class SearchPageObject extends MainPageObject {
         super(driver);
     }
 
+    // TEMPLATE METHODS //
+    public String getArticleNameInSearchResult(String articleName) {
+        return ARTICLE_NAME_IN_SEARCH_RESULT_TMP.replace("ARTICLE_NAME", articleName);
+    }
+
+    public String waitForElementByTitleAndDescription(String title, String description) {
+        return null;
+    }
+    // TEMPLATE METHODS //
+
     public WebElement initSearchLine() {
         return waitForElementPresentBy(By.xpath(SEARCH_INIT_ELEMENT), "Search input is not displayed");
+    }
+
+    public void clickToArticleInSearchList(String articleName) {
+        waitForElementAndClick(By.xpath(getArticleNameInSearchResult(articleName)), "'" + articleName + "' link is not present");
     }
 
     public void enterDataToSearchInit(String text) {
