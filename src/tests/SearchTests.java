@@ -39,4 +39,19 @@ public class SearchTests extends TestCore {
         searchPage.enterDataToSearchInit(textValue);
         searchPage.verifySearchLinksContainsText(textValue);
     }
+
+    @Test
+    public void testFindArticleByNameAndDescription() {
+        String textValue = "Java";
+        String expected_first_Article_Title = "Java (programming language)";
+        String expected_first_Article_Description = "Object-oriented programming language";
+        String expected_second_Article_Title = "Java";
+        String expected_second_Article_Description = "Indonesian island";
+        String expected_third_Article_Title = "JavaScript";
+        String expected_third_Article_Description = "High-level programming language";
+        searchPage.enterDataToSearchInit(textValue);
+        searchPage.getArticleTitleAndDescription(expected_first_Article_Title, expected_first_Article_Description);
+        searchPage.getArticleTitleAndDescription(expected_second_Article_Title, expected_second_Article_Description);
+        searchPage.getArticleTitleAndDescription(expected_third_Article_Title, expected_third_Article_Description);
+    }
 }

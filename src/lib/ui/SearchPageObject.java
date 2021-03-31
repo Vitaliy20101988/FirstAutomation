@@ -7,9 +7,8 @@ import org.openqa.selenium.WebElement;
 public class SearchPageObject extends MainPageObject {
 
     private static final String
-            ARTICLE_NAME_IN_SEARCH_RESULT_TMP = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='ARTICLE_NAME']",
-
-    SEARCH_INIT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]",
+            ARTICLE_NAME_IN_SEARCH_RESULT_TMP = "//*[@text='ARTICLE_NAME']/following-sibling::*[@text='ARTICLE_DESCRIPTION']",
+        SEARCH_INIT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_container']//*[contains(@text, 'Search Wikipedia')]",
         SEARCH_INPUT = "org.wikipedia:id/search_src_text",
         CLOSE_BTN = "org.wikipedia:id/search_close_btn",
         NAVIGATE_UP_BTN = "//android.widget.ImageButton[@content-desc=\"Navigate up\"]",
@@ -25,8 +24,8 @@ public class SearchPageObject extends MainPageObject {
         return ARTICLE_NAME_IN_SEARCH_RESULT_TMP.replace("ARTICLE_NAME", articleName);
     }
 
-    public String waitForElementByTitleAndDescription(String title, String description) {
-        return null;
+    public String getArticleTitleAndDescription(String title, String description) {
+        return ARTICLE_NAME_IN_SEARCH_RESULT_TMP.replace("ARTICLE_NAME", title).replace("ARTICLE_DESCRIPTION", description);
     }
     // TEMPLATE METHODS //
 
@@ -36,6 +35,11 @@ public class SearchPageObject extends MainPageObject {
 
     public void clickToArticleInSearchList(String articleName) {
         waitForElementAndClick(By.xpath(getArticleNameInSearchResult(articleName)), "'" + articleName + "' link is not present");
+    }
+
+    public void waitForElementByTitleAndDescription(String title, String description){
+        String error_msg = "Article with title: " + title + " and description: " + description + "is not present";
+        waitVisability(By.xpath(getArticleTitleAndDescription(title, description)), error_msg, 10);
     }
 
     public void enterDataToSearchInit(String text) {

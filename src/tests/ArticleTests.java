@@ -52,8 +52,9 @@ public class ArticleTests extends TestCore {
 
     @Test
     public void testAssertTitle() {
+        String searchRequest = "Java";
         String java_link_name = "Java (programming language)";
-        searchPage.enterDataToSearchInit("Java");
+        searchPage.enterDataToSearchInit(searchRequest);
         searchPage.clickToArticleInSearchList(java_link_name);
         articlePage.verifyArticleTitleIsPresent(java_link_name);
     }
