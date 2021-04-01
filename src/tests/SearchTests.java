@@ -50,8 +50,8 @@ public class SearchTests extends TestCore {
         String expected_third_Article_Title = "JavaScript";
         String expected_third_Article_Description = "High-level programming language";
         searchPage.enterDataToSearchInit(textValue);
-        searchPage.getArticleTitleAndDescription(expected_first_Article_Title, expected_first_Article_Description);
-        searchPage.getArticleTitleAndDescription(expected_second_Article_Title, expected_second_Article_Description);
-        searchPage.getArticleTitleAndDescription(expected_third_Article_Title, expected_third_Article_Description);
+        searchPage.waitForElementByTitleAndDescription(expected_first_Article_Title, expected_first_Article_Description);
+        searchPage.waitForElementByTitleAndDescription(expected_second_Article_Title, expected_second_Article_Description);
+        searchPage.waitForElementByTitleAndDescription(expected_third_Article_Title, expected_third_Article_Description);
     }
 }
