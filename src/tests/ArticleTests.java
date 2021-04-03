@@ -1,5 +1,6 @@
 package tests;
 
+import io.appium.java_client.AppiumDriver;
 import lib.TestCore;
 import lib.ui.ArticlePageObject;
 import lib.ui.HomePageObject;
@@ -13,9 +14,9 @@ public class ArticleTests extends TestCore {
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.searchPage = new SearchPageObject(driver);
-        this.articlePage = new ArticlePageObject(driver);
-        HomePageObject homePage = new HomePageObject(driver);
+        this.searchPage = new SearchPageObject((AppiumDriver) driver);
+        this.articlePage = new ArticlePageObject((AppiumDriver) driver);
+        HomePageObject homePage = new HomePageObject((AppiumDriver) driver);
 
         homePage.clickSkipBtn();
     }

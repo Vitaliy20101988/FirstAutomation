@@ -12,8 +12,8 @@ public class SearchTests extends TestCore {
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.searchPage = new SearchPageObject(driver);
-        HomePageObject homePage = new HomePageObject(driver);
+        this.searchPage = new SearchPageObject( driver);
+        HomePageObject homePage = new HomePageObject( driver);
 
         homePage.clickSkipBtn();
     }
